@@ -42,7 +42,7 @@ It should be noted that while it can be convenient to use this in a bash script,
 * You activate a python environment with all the required dependencies
 * Set your environment variables properly
 * Specify the `CASE` and `ARGS` in the following format when running the script:
-    * `python cesm_hist2tseries.py {CASE} {ARGS}`
+    * `./cesm_hist2tseries.py {CASE} {ARGS}`
 
 ## How do I run this?
 Once you access Casper, follow these steps:
