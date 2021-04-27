@@ -46,6 +46,8 @@ It should be noted that while it can be convenient to use this in a bash script,
 
 ## How do I run this?
 Once you access Casper, follow these steps:
+1. Clone this repository using `git clone https://github.com/NCAR/cesm-hist2tseries.git`
+1. Install the conda environment using `conda env create -f environment.yml` within this repository 
 1. Setup your bash script setting the required variables, specifying which components to operate on
 1. Within the terminal, run `casperexec`
 1. Ensure the permissions are set correctly on your bash file, then run `./post-proc.sh` relacing the name of the file with the name of your bash script
