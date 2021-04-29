@@ -16,7 +16,6 @@ import cftime
 import xarray as xr
 import numpy as np
 
-import globus
 from workflow import task_manager as tm
 
 logger = logging.getLogger(__name__)
@@ -30,9 +29,13 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 GLOBUS_CAMPAIGN_PATH = '/gpfs/csfs1/cesm/development/bgcwg/projects/xtFe/cases'
 
 USER = os.environ['USER']
+
+# Change this to  /glade/scratch/gunterl/archive/b.e21.B1850G.f19_g17.9kaControl.001_bobsandbox
 ARCHIVE_ROOT = f'/glade/scratch/{USER}/archive'
 
+# Change the correct account
 tm.ACCOUNT = 'NCGD0011'
+
 tm.MAXJOBS = 100
 
 xr_open = dict(decode_times=False, decode_coords=False)
