@@ -76,4 +76,4 @@ dependencies:
     - pytz==2021.1
     - pyyaml==5.4.1
     - xarray==0.17.0
-    - git+https://github.com/NCAR/workflow.git
+    - git+https://github.com/mgrover1/workflow/tree/pbs-update.git
