@@ -1,0 +1,26 @@
+ocn:
+  pop.h:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  pop.h.nday1:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+  pop.h.nyear1:
+    dateglob: ????
+    dateregex: '\d{4}'
+    freq: year_1
+  pop.h.ecosys.nday1:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+  pop.h.ecosys.nyear1:
+    dateglob: ????
+    dateregex: '\d{4}'
+    freq: year_1
+ice:
+  cice.h:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
