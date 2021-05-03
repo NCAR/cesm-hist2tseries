@@ -1,4 +1,95 @@
-ocn:
+atm: #cam component
+  cam.h0:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  cam.h1:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: day_1
+  cam.h2:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: hour_6
+  cam.h3:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: hour_3
+  cam.h4:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: hour_1
+  cam.h5:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: subhour_3
+  cam.h6:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: day_1
+  cam.h7:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: day_5
+  cam.h8:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: day_10
+lnd: #cml2 component
+  clm2.h0:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  clm.h1:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  clm.h2:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  clm.h3:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_365
+  clm.h4:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_365
+  clm.h5:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+  clm.h6:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+  clm.h7:
+    dateglob: ????-??-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{2}'
+    freq: hour_3
+  clm.h8:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+rof: # mosart component
+  mosart.h0:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  mosart.h1:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+  mosart.h2:
+    dateglob: ????-??-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{2}'
+    freq: hour_6
+  mosart.h3:
+    dateglob: ????-??-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{2}'
+    freq: hour_3
+ocn: # pop component
   pop.h:
     dateglob: ????-??
     dateregex: '\d{4}-\d{2}'
@@ -11,6 +102,10 @@ ocn:
     dateglob: ????
     dateregex: '\d{4}'
     freq: year_1
+  pop.h.ecosys:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
   pop.h.ecosys.nday1:
     dateglob: ????-??-??
     dateregex: '\d{4}-\d{2}-\d{2}'
@@ -19,8 +114,27 @@ ocn:
     dateglob: ????
     dateregex: '\d{4}'
     freq: year_1
-ice:
+ice: # cice component
   cice.h:
     dateglob: ????-??
     dateregex: '\d{4}-\d{2}'
     freq: month_1
+  cice.h1:
+    dateglob: ????-??-??
+    dateregex: '\d{4}-\d{2}-\d{2}'
+    freq: day_1
+glc: # cism component
+  cism.h:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: year_1
+  cism.h1:
+    dateglob: ????-??-??-?????
+    dateregex: '\d{4}-\d{2}-\d{2}-\d{5}'
+    freq: month_1
+wav: # ww3 component
+  ww3.h:
+    dateglob: ????-??
+    dateregex: '\d{4}-\d{2}'
+    freq: month_1
+  
