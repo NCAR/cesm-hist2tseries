@@ -1,0 +1,4 @@
+typer>=0.3
+xarray>=0.17
+rich>=9.10.0
+dask

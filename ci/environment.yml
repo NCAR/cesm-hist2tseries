@@ -1,0 +1,14 @@
+name: cesm-hist2tseries
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - dask
+  - distributed
+  - netcdf4
+  - pip
+  - pre-commit
+  - pytest-cov
+  - rich
+  - typer
+  - xarray
