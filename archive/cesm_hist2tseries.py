@@ -246,7 +246,7 @@ def _main(case, components=['atm', 'lnd', 'rof', 'ocn', 'ice', 'glc', 'wav'], nw
         nworkers - 1
     
     # Determine how many tasks to send to a single worker
-    n = total_tasks // (nworkers-1)
+    n = len(task_list) // (nworkers-1)
 
     # Create new task list which has a length = nworker
     dist_task_list = [task_list[i:i + n] for i in range(0, len(task_list), n)]
