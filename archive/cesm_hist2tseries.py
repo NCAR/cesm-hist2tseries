@@ -26,16 +26,10 @@ logger.addHandler(handler)
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 
-GLOBUS_CAMPAIGN_PATH = '/gpfs/csfs1/cesm/development/bgcwg/projects/xtFe/cases'
-
 USER = os.environ['USER']
-
-# Change this to  /glade/scratch/gunterl/archive/b.e21.B1850G.f19_g17.9kaControl.001_bobsandbox
 ARCHIVE_ROOT = f'/glade/scratch/{USER}/archive'
 
-# Change the correct account
 tm.ACCOUNT = 'NCGD0011'
-
 tm.MAXJOBS = 100
 
 xr_open = dict(decode_times=False, decode_coords=False)
@@ -108,39 +102,36 @@ def get_vars(files):
                      v not in static_vars]
     return static_vars, time_vars
 
-
+# Insert gen_time_series function - same input arguements - main will just call it
+# this would run through the history to timeseries
 @click.command()
 @click.argument('case')
-@click.option('--components', default='ocn')
+@click.option('--components', default='atm, lnd, rof, ocn, ice, glc, wav')
+@click.option('--nworkers', default=12)
 @click.option('--archive-root', default=ARCHIVE_ROOT)
 @click.option('--output-root', default=None)
 @click.option('--only-streams', default=[])
 @click.option('--only-variables', default=None)
-@click.option('--campaign-transfer', default=False, is_flag=True)
-@click.option('--campaign-path', default=GLOBUS_CAMPAIGN_PATH)
 @click.option('--year-groups', default=None)
 @click.option('--demo', default=False, is_flag=True)
 @click.option('--clobber', default=False, is_flag=True)
 
-def main(case, components=['ocn', 'ice'], archive_root=ARCHIVE_ROOT, output_root=None,
-         only_streams=[], only_variables=None, campaign_transfer=False, campaign_path=None,
+def _main(case, components=['atm', 'lnd', 'rof', 'ocn', 'ice', 'glc', 'wav'], nworkers=12,
+         archive_root=ARCHIVE_ROOT, output_root=None,
+         only_streams=[], only_variables=None,
          year_groups=None, demo=False, clobber=False):
 
     droot = os.path.join(archive_root, case)
     if isinstance(components, str):
-        components = components.split(',')
+        components = components.split(', ')
 
     if output_root is None:
         droot_out = droot
     else:
         droot_out = os.path.join(output_root, case)
 
-    if campaign_transfer and campaign_path is None:
-        raise ValueError('campaign path required')
-
-
     if year_groups is None:
-        year_groups = [(-1e36, 1e36)]
+        year_groups = [(0, 5)]
         report_year_groups = False
 
     elif isinstance(year_groups, str):
@@ -163,7 +154,8 @@ def main(case, components=['ocn', 'ice'], archive_root=ARCHIVE_ROOT, output_root
     with open(f'{script_path}/cesm_streams.yml') as f:
         streams = yaml.safe_load(f)
 
-
+    # Create a list for tasks - this will be used later to separate into workers
+    task_list = []
     for component in components:
         print('='*80)
         logger.info(f'working on component: {component}')
@@ -185,14 +177,6 @@ def main(case, components=['ocn', 'ice'], archive_root=ARCHIVE_ROOT, output_root
             dout = f'{droot_out}/{component}/proc/tseries/{freq}'
             if not os.path.exists(dout):
                 os.makedirs(dout, exist_ok=True)
-
-            # set target destination on globus
-            globus_file_list = []
-            if campaign_transfer:
-                campaign_dout = f'{campaign_path}/{case}/{component}/proc/tseries/{freq}'
-                globus.makedirs('campaign', campaign_dout)
-                globus_file_list = globus.listdir('campaign', campaign_dout)
-                logger.info(f'found {len(globus_file_list)} files on campaign.')
 
             # get input files
             files = sorted(glob(f'{droot}/{component}/hist/{case}.{stream}.{dateglob}.nc'))
@@ -240,9 +224,6 @@ def main(case, components=['ocn', 'ice'], archive_root=ARCHIVE_ROOT, output_root
                     file_cat = os.path.join(dout, file_cat_basename)
 
                     if not clobber:
-                        if file_cat_basename in globus_file_list:
-                            print(f'on campaign: {file_cat_basename}...skipping')
-                            continue
                         if os.path.exists(file_cat):
                             print(f'exists: {file_cat_basename}...skipping')
                             continue
@@ -252,25 +233,32 @@ def main(case, components=['ocn', 'ice'], archive_root=ARCHIVE_ROOT, output_root
                     cat_cmd = [f'cat {tmpfile} | ncrcat -O -h -v {vars} {file_cat}']
                     compress_cmd = [f'ncks -O -4 -L 1 {file_cat} {file_cat}']
 
-                    if not demo:
-                        if campaign_transfer:
-                            xfr_cmd = [f'{script_path}/globus.py',
-                                       '--src-ep=glade --dst-ep=campaign',
-                                       '--retry=3',
-                                       f'--src-paths={file_cat}',
-                                       f'--dst-paths={campaign_dout}/{file_cat_basename}']
+                    
+                        
+                    # Append lists of tasks
+                    task_list.append(cat_cmd)
+                    task_list.append(compress_cmd)
 
-                            cleanup_cmd = [f'if [ $? -eq 0 ]; then rm -f {file_cat}; else exit 1; fi']
-                        else:
-                            xfr_cmd = []
-                            cleanup_cmd = []
+    # Make sure there are an even number of workers to match tasks
+    if nworkers % 2 == 0:
+        None
+    else:
+        nworkers - 1
+    
+    # Determine how many tasks to send to a single worker
+    n = total_tasks // (nworkers-1)
 
-                        jid = tm.submit([cat_cmd, compress_cmd, xfr_cmd, cleanup_cmd],
-                                         modules=['nco'], memory='100GB')
+    # Create new task list which has a length = nworker
+    dist_task_list = [task_list[i:i + n] for i in range(0, len(task_list), n)]
 
-                print()
+
+    for task in dist_task_list:
+        jid = tm.submit(task,
+                        modules=['nco'], memory='100GB')
+
+        print()
 
     tm.wait()
 
 if __name__ == '__main__':
-    main()
+    _main()
